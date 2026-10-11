@@ -6,22 +6,25 @@ import Purchase from './components/purchase'
 import ShippingEntry from './components/shippingEntry'
 import ShoppingCart from './components/shoppingCart'
 import ViewOrder from './components/viewOrder'
+import { CartProvider } from './context/CartContext'
 import './App.css'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Navigate to="/purchase" replace />} />
-        <Route path="/purchase" element={<Purchase />} />
-        <Route path="/shippingEntry" element={<ShippingEntry />} />
-        <Route path="/paymentEntry" element={<PaymentEntry />} />
-        <Route path="/confirmation" element={<Confirmation />} />
-        <Route path="/viewOrder" element={<ViewOrder />} />
-        <Route path="/shoppingCart" element={<ShoppingCart />} />
-      </Routes>
-    </BrowserRouter>
+    <CartProvider>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Navigate to="/purchase" replace />} />
+          <Route path="/purchase" element={<Purchase />} />
+          <Route path="/shippingEntry" element={<ShippingEntry />} />
+          <Route path="/paymentEntry" element={<PaymentEntry />} />
+          <Route path="/confirmation" element={<Confirmation />} />
+          <Route path="/viewOrder" element={<ViewOrder />} />
+          <Route path="/shoppingCart" element={<ShoppingCart />} />
+        </Routes>
+      </BrowserRouter>
+    </CartProvider>
   )
 }
 
