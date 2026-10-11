@@ -1,20 +1,26 @@
 import { createElement, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { itemsById } from '../data/items'
 
 export default function ShoppingCart() {
+  const navigate = useNavigate()
   const { cart, updateCart, resetCart } = useCart()
 
   const handleQuantityChange = (itemId, value) => {
     const max = itemsById[itemId]?.stock ?? Infinity
     const qty = Math.min(max, Math.max(0, parseInt(value, 10) || 0))
     updateCart((prev) => ({ buyQuantity: { ...prev.buyQuantity, [itemId]: qty } }))
+    if (qty > 0) {
+      setErrorMessage('')
+    }
   }
 
   // Items shown on this page are fixed at mount, so one reduced to 0 stays visible until the page is revisited
   const [visibleIds, setVisibleIds] = useState(() =>
     Object.keys(cart.buyQuantity).filter((id) => cart.buyQuantity[id] > 0),
   )
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleDelete = (itemId) => {
     handleQuantityChange(itemId, 0)
@@ -24,6 +30,16 @@ export default function ShoppingCart() {
   const handleClear = () => {
     resetCart()
     setVisibleIds([])
+    setErrorMessage('')
+  }
+
+  const handleCheckout = () => {
+    if (totalItems === 0) {
+      setErrorMessage('Cannot checkout with an empty cart')
+      return
+    }
+    setErrorMessage('')
+    navigate('/paymentEntry')
   }
 
   const totalItems = Object.values(cart.buyQuantity).reduce((acc, curr) => acc + curr, 0)
@@ -133,6 +149,26 @@ export default function ShoppingCart() {
           ),
         )
       }),
+    ),
+    errorMessage
+      ? createElement(
+          'p',
+          {
+            style: { color: 'red', textAlign: 'center', margin: '12px auto 0' },
+            role: 'alert',
+            'data-testid': 'empty-cart-error',
+          },
+          errorMessage,
+        )
+      : null,
+    createElement(
+      'button',
+      {
+        type: 'button',
+        onClick: handleCheckout,
+        style: { display: 'block', margin: '12px auto 0' },
+      },
+      'Checkout',
     ),
     createElement(
       'button',

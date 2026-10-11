@@ -3,7 +3,7 @@ import { createContext, useContext, useState, useMemo, useCallback, createElemen
 export const initialOrder = {
   // Map of item id -> quantity; only items with a quantity are present
   buyQuantity: {},
-  credit_card_numer: '',
+  credit_card_number: '',
   expir_date: '',
   cvvCode: '',
   card_holder_name: '',

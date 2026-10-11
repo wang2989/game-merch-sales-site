@@ -32,7 +32,7 @@ export default function Confirmation() {
       createElement(
         'p',
         null,
-        `Credit Card: ${cart.credit_card_numer ? `****${cart.credit_card_numer.slice(-4)}` : 'Not provided'}`,
+        `Credit Card: ${cart.credit_card_number ? `****${cart.credit_card_number.slice(-4)}` : 'Not provided'}`,
       ),
       createElement('p', null, `Exp Date: ${cart.expir_date || 'Not provided'}`),
     ),
