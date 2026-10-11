@@ -1,9 +1,10 @@
 import { createElement } from 'react'
 import { useCart } from '../context/CartContext'
+import { itemsById } from '../data/items'
 
 export default function ViewOrder() {
   const { cart } = useCart()
-  const totalItems = cart.buyQuantity.reduce((acc, curr) => acc + curr, 0)
+  const totalItems = Object.values(cart.buyQuantity).reduce((acc, curr) => acc + curr, 0)
 
   return createElement(
     'div',
@@ -13,8 +14,8 @@ export default function ViewOrder() {
     createElement(
       'ul',
       null,
-      cart.buyQuantity.map((qty, index) =>
-        createElement('li', { key: index }, `Item ${index + 1}: ${qty}`),
+      Object.entries(cart.buyQuantity).map(([itemId, qty]) =>
+        createElement('li', { key: itemId }, `${itemsById[itemId]?.name ?? itemId}: ${qty}`),
       ),
     ),
     createElement(

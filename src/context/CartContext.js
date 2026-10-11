@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useMemo, useCallback, createElement } from 'react'
 
 export const initialOrder = {
-  buyQuantity: [0, 0, 0, 0, 0],
+  // Map of item id -> quantity; only items with a quantity are present
+  buyQuantity: {},
   credit_card_numer: '',
   expir_date: '',
   cvvCode: '',
@@ -33,7 +34,7 @@ export const CartContext = createContext({
 export function CartProvider({ children }) {
   const [cart, setCart] = useState(() => ({
     ...initialOrder,
-    buyQuantity: [...initialOrder.buyQuantity],
+    buyQuantity: { ...initialOrder.buyQuantity },
   }))
 
   const updateCart = useCallback((updates) => {
@@ -49,7 +50,7 @@ export function CartProvider({ children }) {
   const resetCart = useCallback(() => {
     setCart({
       ...initialOrder,
-      buyQuantity: [...initialOrder.buyQuantity],
+      buyQuantity: { ...initialOrder.buyQuantity },
     })
   }, [])
 

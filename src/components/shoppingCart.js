@@ -1,17 +1,16 @@
 import { createElement } from 'react'
 import { useCart } from '../context/CartContext'
+import { itemsById } from '../data/items'
 
 export default function ShoppingCart() {
   const { cart, updateCart, resetCart } = useCart()
 
-  const handleQuantityChange = (index, value) => {
+  const handleQuantityChange = (itemId, value) => {
     const qty = Math.max(0, parseInt(value, 10) || 0)
-    const newBuyQuantity = [...cart.buyQuantity]
-    newBuyQuantity[index] = qty
-    updateCart({ buyQuantity: newBuyQuantity })
+    updateCart((prev) => ({ buyQuantity: { ...prev.buyQuantity, [itemId]: qty } }))
   }
 
-  const totalItems = cart.buyQuantity.reduce((acc, curr) => acc + curr, 0)
+  const totalItems = Object.values(cart.buyQuantity).reduce((acc, curr) => acc + curr, 0)
 
   return createElement(
     'div',
@@ -21,17 +20,17 @@ export default function ShoppingCart() {
     createElement(
       'div',
       null,
-      cart.buyQuantity.map((qty, index) =>
+      Object.entries(cart.buyQuantity).map(([itemId, qty]) =>
         createElement(
           'div',
-          { key: index, style: { margin: '8px 0' } },
-          createElement('label', { htmlFor: `cart-item-${index}` }, `Item ${index + 1}: `),
+          { key: itemId, style: { margin: '8px 0' } },
+          createElement('label', { htmlFor: `cart-item-${itemId}` }, `${itemsById[itemId]?.name ?? itemId}: `),
           createElement('input', {
-            id: `cart-item-${index}`,
+            id: `cart-item-${itemId}`,
             type: 'number',
             min: '0',
             value: qty,
-            onChange: (e) => handleQuantityChange(index, e.target.value),
+            onChange: (e) => handleQuantityChange(itemId, e.target.value),
           }),
         ),
       ),
