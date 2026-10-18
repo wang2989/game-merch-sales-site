@@ -59,7 +59,12 @@ export default function ShippingEntry() {
       shippingFields.map(([field, label, type]) =>
         createElement(
           'label',
-          { key: field, htmlFor: `shipping-${field}`, style: { display: 'grid', gap: 4 } },
+          {
+            key: field,
+            htmlFor: `shipping-${field}`,
+            className: 'form-label shipping-form-label',
+            style: { display: 'grid', gap: 4 },
+          },
           label,
           createElement('input', {
             id: `shipping-${field}`,
@@ -74,11 +79,10 @@ export default function ShippingEntry() {
               setFields((current) => ({ ...current, [field]: event.target.value }))
               setError('')
             },
-            style: { padding: 8, font: 'inherit' },
           }),
         ),
       ),
-      error ? createElement('p', { role: 'alert', style: { color: '#b00020' } }, error) : null,
+      error ? createElement('p', { role: 'alert', style: { color: 'var(--error)' } }, error) : null,
       createElement('button', { type: 'submit' }, 'Continue to Order'),
     ),
   )

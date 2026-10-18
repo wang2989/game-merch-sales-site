@@ -14,15 +14,18 @@ function App() {
     <CartProvider>
       <BrowserRouter>
         <Navbar />
-        <Routes>
-          <Route path="/" element={<Navigate to="/purchase" replace />} />
-          <Route path="/purchase" element={<Purchase />} />
-          <Route path="/shippingEntry" element={<ShippingEntry />} />
-          <Route path="/paymentEntry" element={<PaymentEntry />} />
-          <Route path="/confirmation" element={<Confirmation />} />
-          <Route path="/viewOrder" element={<ViewOrder />} />
-          <Route path="/shoppingCart" element={<ShoppingCart />} />
-        </Routes>
+        <main className="app-content">
+          <Routes>
+            <Route path="/" element={<Navigate to="/purchase" replace />} />
+            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/shippingEntry" element={<ShippingEntry />} />
+            <Route path="/paymentEntry" element={<PaymentEntry />} />
+            <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/viewOrder" element={<ViewOrder />} />
+            <Route path="/shoppingCart" element={<ShoppingCart />} />
+          </Routes>
+        </main>
+        <footer className="site-footer">© All rights reserved 2026</footer>
       </BrowserRouter>
     </CartProvider>
   )

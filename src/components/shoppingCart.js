@@ -69,7 +69,7 @@ export default function ShoppingCart() {
               width: '100%',
               maxWidth: 480,
               padding: 12,
-              border: '1px solid #ccc',
+              border: '1px solid var(--border)',
               borderRadius: 8,
             },
           },
@@ -82,7 +82,7 @@ export default function ShoppingCart() {
                   alt: item.name,
                   style: { ...size, objectFit: 'cover' },
                 })
-              : createElement('div', { style: { ...size, background: '#eee' } }),
+              : createElement('div', { style: { ...size, background: 'var(--surface-muted)' } }),
             createElement('strong', null, item?.name ?? itemId),
           ),
           createElement(
@@ -91,6 +91,7 @@ export default function ShoppingCart() {
             createElement(
               'button',
               {
+                className: 'button-secondary',
                 type: 'button',
                 'aria-label': `Decrease ${item?.name ?? itemId} quantity`,
                 disabled: qty <= 0,
@@ -111,6 +112,7 @@ export default function ShoppingCart() {
             createElement(
               'button',
               {
+                className: 'button-secondary',
                 type: 'button',
                 'aria-label': `Increase ${item?.name ?? itemId} quantity`,
                 disabled: qty >= max,
@@ -121,6 +123,7 @@ export default function ShoppingCart() {
             createElement(
               'button',
               {
+                className: 'button-secondary',
                 type: 'button',
                 'aria-label': `Remove ${item?.name ?? itemId} from cart`,
                 title: 'Remove',
@@ -154,7 +157,7 @@ export default function ShoppingCart() {
       ? createElement(
           'p',
           {
-            style: { color: 'red', textAlign: 'center', margin: '12px auto 0' },
+            style: { color: 'var(--error)', textAlign: 'center', margin: '12px auto 0' },
             role: 'alert',
             'data-testid': 'empty-cart-error',
           },
@@ -164,6 +167,7 @@ export default function ShoppingCart() {
     createElement(
       'button',
       {
+        className: 'button-primary',
         type: 'button',
         onClick: handleCheckout,
         style: { display: 'block', margin: '12px auto 0' },
@@ -172,7 +176,12 @@ export default function ShoppingCart() {
     ),
     createElement(
       'button',
-      { type: 'button', onClick: handleClear, style: { display: 'block', margin: '12px auto 0' } },
+      {
+        className: 'button-secondary',
+        type: 'button',
+        onClick: handleClear,
+        style: { display: 'block', margin: '12px auto 0' },
+      },
       'Clear Cart',
     ),
   )

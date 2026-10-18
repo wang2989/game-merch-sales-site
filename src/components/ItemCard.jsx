@@ -10,7 +10,7 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
   return (
     <div
       style={{
-        border: '1px solid #ccc',
+        border: '1px solid var(--border)',
         borderRadius: 8,
         padding: 12,
         width: 200,
@@ -20,15 +20,15 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
       }}
     >
       {item.image ? (
-        <img src={item.image} alt={item.name} style={{ width: '100%', height: 140, objectFit: 'cover' }} />
+        <img className="product-image" src={item.image} alt={item.name} />
       ) : (
-        <div style={{ width: '100%', height: 140, background: '#eee' }} aria-label="No image" />
+        <div className="product-image-placeholder" aria-label="No image" />
       )}
       <strong>{item.name}</strong>
       <span>${item.price.toFixed(2)}</span>
       <span>{item.stock} available</span>
       <div>
-        <button type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 0}>
+        <button className="button-secondary" type="button" onClick={() => setQty(quantity - 1)} disabled={quantity <= 0}>
           -
         </button>
         <input
@@ -40,7 +40,7 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
           onChange={(e) => setQty(e.target.value)}
           style={{ width: 60, textAlign: 'center' }}
         />
-        <button type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= item.stock}>
+        <button className="button-secondary" type="button" onClick={() => setQty(quantity + 1)} disabled={quantity >= item.stock}>
           +
         </button>
       </div>

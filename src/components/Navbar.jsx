@@ -6,8 +6,12 @@ export default function Navbar() {
   const hasItems = Object.values(cart.buyQuantity).some((qty) => qty > 0)
 
   return (
-    <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 16px' }}>
-      <Link to="/purchase">Catalog</Link>
+    <nav className="site-header" aria-label="Main navigation">
+      <div className="site-nav-links">
+        <Link to="/purchase">Home</Link>
+        <Link to="/about">About Us</Link>
+        <Link to="/contact">Contact Us</Link>
+      </div>
       <Link
         to="/shoppingCart"
         aria-label={hasItems ? 'Shopping cart (has items)' : 'Shopping cart (empty)'}

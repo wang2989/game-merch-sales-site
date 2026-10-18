@@ -178,7 +178,7 @@ export default function PaymentEntry() {
     createElement('h1', { style: { textAlign: 'center' } }, 'Payment Entry'),
     createElement(
       'p',
-      { style: { textAlign: 'center', marginBottom: 24, color: '#555' } },
+      { style: { textAlign: 'center', marginBottom: 24 } },
       'Please enter your credit card information.',
     ),
     createElement(
@@ -203,7 +203,8 @@ export default function PaymentEntry() {
               'label',
               {
                 htmlFor: id,
-                style: { minWidth: 160, fontWeight: 'bold' },
+                className: 'form-label payment-form-label',
+                style: { minWidth: 160 },
               },
               label,
             ),
@@ -216,10 +217,7 @@ export default function PaymentEntry() {
               placeholder,
               'aria-label': label,
               style: {
-                padding: '8px 12px',
-                border: errors[name] ? '1px solid red' : '1px solid #ccc',
-                borderRadius: 4,
-                fontSize: '14px',
+                borderColor: errors[name] ? 'var(--error)' : undefined,
                 width: 220,
               },
             }),
@@ -229,7 +227,7 @@ export default function PaymentEntry() {
                   {
                     id: `${name}-error`,
                     'data-testid': `${name}-error`,
-                    style: { color: 'red', fontSize: '14px' },
+                    style: { color: 'var(--error)' },
                     role: 'alert',
                   },
                   errors[name],
@@ -247,9 +245,6 @@ export default function PaymentEntry() {
           style: {
             display: 'block',
             margin: '32px auto 0',
-            padding: '10px 24px',
-            fontSize: '16px',
-            cursor: 'pointer',
           },
         },
         'Save Credit Card Information',

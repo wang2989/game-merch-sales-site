@@ -25,9 +25,9 @@ export default function ViewOrder() {
     : rawCard || 'Not provided'
 
   return (
-    <div style={{ maxWidth: 800, margin: '2rem auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
-      <h2>Review & Confirm Your Order</h2>
-      <p style={{ color: '#555' }}>Please review your order details, shipping address, and payment method below.</p>
+    <div style={{ maxWidth: 800, margin: '2rem auto', padding: '1.5rem' }}>
+      <h1>Review & Confirm Your Order</h1>
+      <p>Please review your order details, shipping address, and payment method below.</p>
 
       {/* Items Summary Table */}
       <section style={{ marginTop: '1.5rem' }}>
@@ -37,7 +37,7 @@ export default function ViewOrder() {
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0.5rem' }}>
             <thead>
-              <tr style={{ borderBottom: '2px solid #ccc', textAlign: 'left' }}>
+              <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
                 <th style={{ padding: '8px' }}>Item</th>
                 <th style={{ padding: '8px' }}>Price</th>
                 <th style={{ padding: '8px' }}>Qty</th>
@@ -46,7 +46,7 @@ export default function ViewOrder() {
             </thead>
             <tbody>
               {orderItems.map((item) => (
-                <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
+                <tr key={item.id} style={{ borderBottom: '1px solid var(--border)' }}>
                   <td style={{ padding: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     {item.image && (
                       <img 
@@ -68,7 +68,7 @@ export default function ViewOrder() {
                 <td colSpan="3" style={{ padding: '12px 8px', fontWeight: 'bold', textAlign: 'right' }}>
                   Total Cost:
                 </td>
-                <td style={{ padding: '12px 8px', fontWeight: 'bold', textAlign: 'right', fontSize: '1.15rem' }}>
+                <td style={{ padding: '12px 8px', fontWeight: 'bold', textAlign: 'right' }}>
                   ${totalCost.toFixed(2)}
                 </td>
               </tr>
@@ -78,7 +78,7 @@ export default function ViewOrder() {
       </section>
 
       {/* Shipping Details */}
-      <section style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #e0e0e0', borderRadius: 8 }}>
+      <section style={{ marginTop: '2rem', padding: '1rem', border: '1px solid var(--border)', borderRadius: 8 }}>
         <h3>Shipping Details</h3>
         <p><strong>Recipient Name:</strong> {cart.name || 'N/A'}</p>
         <p><strong>Address Line 1:</strong> {cart.address_1 || 'N/A'}</p>
@@ -90,7 +90,7 @@ export default function ViewOrder() {
       </section>
 
       {/* Payment Details */}
-      <section style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid #e0e0e0', borderRadius: 8 }}>
+      <section style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid var(--border)', borderRadius: 8 }}>
         <h3>Payment Information</h3>
         <p><strong>Cardholder Name:</strong> {cart.card_holder_name || 'N/A'}</p>
         <p><strong>Card Number:</strong> {maskedCard}</p>
@@ -102,7 +102,7 @@ export default function ViewOrder() {
         <button
           type="button"
           onClick={() => navigate('/paymentEntry')}
-          style={{ padding: '10px 18px', cursor: 'pointer', borderRadius: 4, border: '1px solid #ccc' }}
+          className="button-secondary"
         >
           Back to Payment
         </button>
@@ -110,15 +110,6 @@ export default function ViewOrder() {
           type="button"
           onClick={() => navigate('/confirmation')}
           disabled={orderItems.length === 0}
-          style={{
-            padding: '10px 24px',
-            backgroundColor: orderItems.length === 0 ? '#aaa' : '#0070f3',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 4,
-            fontWeight: 'bold',
-            cursor: orderItems.length === 0 ? 'not-allowed' : 'pointer',
-          }}
         >
           Confirm & Place Order
         </button>

@@ -27,12 +27,12 @@ export default function Confirmation() {
   }
 
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto', padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
-      <div style={{ fontSize: '3rem', color: '#28a745' }}>✓</div>
-  <h1 style={{ lineHeight: '1.25', margin: '0.5rem 0 1rem' }}>
-  Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
-</h1>
-      <p style={{ color: '#555', fontSize: '1.1rem' }}>
+    <div style={{ maxWidth: 700, margin: '2rem auto', padding: '2rem', textAlign: 'center' }}>
+      <div style={{ fontSize: '3rem', color: 'var(--success)' }}>✓</div>
+      <h1 style={{ margin: '0.5rem 0 1rem' }}>
+        Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
+      </h1>
+      <p>
         Your transaction has been processed successfully.
       </p>
 
@@ -42,13 +42,13 @@ export default function Confirmation() {
           display: 'inline-block',
           margin: '1.5rem 0',
           padding: '1rem 2rem',
-          backgroundColor: '#f4f6f8',
-          border: '1px dashed #0070f3',
+          backgroundColor: 'var(--surface-muted)',
+          border: '1px dashed var(--accent)',
           borderRadius: 8,
         }}
       >
-        <span style={{ fontSize: '0.9rem', color: '#666', display: 'block' }}>Confirmation Number</span>
-        <strong style={{ fontSize: '1.4rem', color: '#111', letterSpacing: '1px' }}>
+        <span style={{ color: 'var(--text)', display: 'block' }}>Confirmation Number</span>
+        <strong style={{ color: 'var(--text-h)', letterSpacing: '1px' }}>
           {confirmationNumber}
         </strong>
       </div>
@@ -59,7 +59,7 @@ export default function Confirmation() {
           textAlign: 'left',
           marginTop: '1.5rem',
           padding: '1.2rem',
-          border: '1px solid #e0e0e0',
+          border: '1px solid var(--border)',
           borderRadius: 8,
         }}
       >
@@ -72,7 +72,7 @@ export default function Confirmation() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 padding: '6px 0',
-                borderBottom: '1px solid #f0f0f0',
+                borderBottom: '1px solid var(--border)',
               }}
             >
               <span>
@@ -87,7 +87,7 @@ export default function Confirmation() {
           <span>${totalCost.toFixed(2)}</span>
         </div>
         {cart.city && (
-          <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem' }}>
+          <p style={{ color: 'var(--text)', marginTop: '1rem' }}>
             Shipping to: {cart.address_1}, {cart.city}, {cart.state} {cart.zip}
           </p>
         )}
@@ -98,14 +98,6 @@ export default function Confirmation() {
         onClick={handleStartNewOrder}
         style={{
           marginTop: '2rem',
-          padding: '12px 24px',
-          backgroundColor: '#0070f3',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 4,
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          cursor: 'pointer',
         }}
       >
         Return to Catalog

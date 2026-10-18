@@ -18,11 +18,11 @@ export default function Purchase() {
 
   return createElement(
     'div',
-    null,
-    createElement('h1', null, 'Purchase'),
+    { className: 'purchase-page' },
+    createElement('h1', null, 'Home'),
     createElement(
       'div',
-      { style: { display: 'flex', flexWrap: 'wrap', gap: 16 } },
+      { className: 'purchase-items' },
       items.map((item) =>
         createElement(ItemCard, {
           key: item.id,
