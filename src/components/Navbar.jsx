@@ -9,14 +9,12 @@ export default function Navbar() {
 
   return (
     <header>
-      {/* Top Announcement Ribbon — Mishmash Signature */}
+      {/* Top Announcement Ribbon */}
       <aside className="announcement-bar">
         <div className="announcement-content">
-          <span className="announcement-item">✦ Free shipping worldwide on orders over $50</span>
+          <span className="announcement-item">✦ More coming soon</span>
           <span className="announcement-sep" aria-hidden="true">|</span>
-          <span className="announcement-item">Use code MERCH15 for 15% off</span>
-          <span className="announcement-sep" aria-hidden="true">|</span>
-          <span className="announcement-item">Crafted for everyday play</span>
+          <span className="announcement-item">Exclusive offers today</span>
         </div>
       </aside>
 
@@ -24,7 +22,7 @@ export default function Navbar() {
       <nav className="site-navbar">
         <div className="site-container navbar-inner">
           <Link to="/purchase" className="navbar-brand">
-            <span>gamemerch</span>
+            <span>relic plaza</span>
             <span className="brand-mark">®</span>
           </Link>
 

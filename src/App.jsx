@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
@@ -12,15 +11,6 @@ import { CartProvider } from './context/CartContext'
 import './App.css'
 
 function App() {
-  const [showPromoMessage, setShowPromoMessage] = useState(false)
-
-  const handlePromoClick = () => {
-    setShowPromoMessage(true)
-    setTimeout(() => {
-      setShowPromoMessage(false)
-    }, 4000)
-  }
-
   return (
     <CartProvider>
       <BrowserRouter>
@@ -36,17 +26,6 @@ function App() {
             <Route path="/shoppingCart" element={<ShoppingCart />} />
           </Routes>
           <Footer />
-
-          {/* Mishmash Signature Floating Promo Pill */}
-          <button
-            type="button"
-            className="floating-promo"
-            onClick={handlePromoClick}
-            aria-label="Special discount offer"
-          >
-            <span>✦</span>
-            <span>{showPromoMessage ? 'Use code MERCH15!' : 'Want 15% off?'}</span>
-          </button>
         </div>
       </BrowserRouter>
     </CartProvider>
