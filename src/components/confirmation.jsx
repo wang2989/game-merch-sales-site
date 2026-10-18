@@ -9,7 +9,7 @@ export default function Confirmation() {
   const confirmationNumber = 'ORD-2026-X8892'
 
   const orderItems = Object.entries(cart.buyQuantity || {})
-    .filter(([_, qty]) => qty > 0)
+    .filter(([, qty]) => qty > 0)
     .map(([id, qty]) => {
       const item = itemsById[id] || { name: 'Item', price: 0 }
       return {
@@ -27,89 +27,99 @@ export default function Confirmation() {
   }
 
   return (
-    <div style={{ maxWidth: 700, margin: '2rem auto', padding: '2rem', textAlign: 'center', fontFamily: 'sans-serif' }}>
-      <div style={{ fontSize: '3rem', color: '#28a745' }}>✓</div>
-  <h1 style={{ lineHeight: '1.25', margin: '0.5rem 0 1rem' }}>
-  Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
-</h1>
-      <p style={{ color: '#555', fontSize: '1.1rem' }}>
-        Your transaction has been processed successfully.
-      </p>
+    <main className="site-main">
+      <div className="site-container">
+        <div className="confirmation-layout">
+          <div className="confirmation-card">
+            <div className="confirmation-icon-circle" aria-hidden="true">
+              ✓
+            </div>
 
-      {/* Confirmation Number */}
-      <div
-        style={{
-          display: 'inline-block',
-          margin: '1.5rem 0',
-          padding: '1rem 2rem',
-          backgroundColor: '#f4f6f8',
-          border: '1px dashed #0070f3',
-          borderRadius: 8,
-        }}
-      >
-        <span style={{ fontSize: '0.9rem', color: '#666', display: 'block' }}>Confirmation Number</span>
-        <strong style={{ fontSize: '1.4rem', color: '#111', letterSpacing: '1px' }}>
-          {confirmationNumber}
-        </strong>
-      </div>
+            <h1 className="form-title" style={{ fontSize: '2rem', marginBottom: 8 }}>
+              Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
+            </h1>
+            <p className="form-description">
+              Your transaction has been processed successfully. A confirmation receipt has been sent.
+            </p>
 
-      {/* Final Order Summary */}
-      <div
-        style={{
-          textAlign: 'left',
-          marginTop: '1.5rem',
-          padding: '1.2rem',
-          border: '1px solid #e0e0e0',
-          borderRadius: 8,
-        }}
-      >
-        <h3 style={{ marginTop: 0 }}>Final Order Summary</h3>
-        <ul style={{ listStyle: 'none', paddingLeft: 0 }}>
-          {orderItems.map((item) => (
-            <li
-              key={item.id}
+            {/* Confirmation Voucher Badge — Mishmash Style */}
+            <div className="voucher-pill">
+              <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-ink-secondary)', display: 'block', marginBottom: 4 }}>
+                Confirmation Reference
+              </span>
+              <span className="voucher-number">{confirmationNumber}</span>
+            </div>
+
+            {/* Final Order Summary */}
+            <div
               style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                padding: '6px 0',
-                borderBottom: '1px solid #f0f0f0',
+                textAlign: 'left',
+                marginTop: 24,
+                padding: 24,
+                backgroundColor: '#faf9f6',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-lg)',
               }}
             >
-              <span>
-                {item.name} &times; {item.quantity}
-              </span>
-              <span>${item.lineTotal.toFixed(2)}</span>
-            </li>
-          ))}
-        </ul>
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', fontWeight: 'bold' }}>
-          <span>Total Paid:</span>
-          <span>${totalCost.toFixed(2)}</span>
-        </div>
-        {cart.city && (
-          <p style={{ fontSize: '0.9rem', color: '#666', marginTop: '1rem' }}>
-            Shipping to: {cart.address_1}, {cart.city}, {cart.state} {cart.zip}
-          </p>
-        )}
-      </div>
+              <h2 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: 'var(--color-ink)' }}>
+                Final Order Summary
+              </h2>
+              <ul style={{ listStyle: 'none', paddingLeft: 0, display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {orderItems.map((item) => (
+                  <li
+                    key={item.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      paddingBottom: 8,
+                      borderBottom: '1px solid var(--color-border-subtle)',
+                      fontSize: 14,
+                    }}
+                  >
+                    <span>
+                      <strong>{item.name}</strong> &times; {item.quantity}
+                    </span>
+                    <span style={{ fontWeight: 600 }}>${item.lineTotal.toFixed(2)}</span>
+                  </li>
+                ))}
+              </ul>
 
-      <button
-        type="button"
-        onClick={handleStartNewOrder}
-        style={{
-          marginTop: '2rem',
-          padding: '12px 24px',
-          backgroundColor: '#0070f3',
-          color: '#fff',
-          border: 'none',
-          borderRadius: 4,
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          cursor: 'pointer',
-        }}
-      >
-        Return to Catalog
-      </button>
-    </div>
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  marginTop: 16,
+                  fontWeight: 700,
+                  fontSize: 16,
+                }}
+              >
+                <span>Total Paid:</span>
+                <span>${totalCost.toFixed(2)}</span>
+              </div>
+
+              {cart.city && (
+                <p style={{ fontSize: 13, color: 'var(--color-ink-secondary)', marginTop: 16, lineHeight: 1.4 }}>
+                  <strong>Delivering to:</strong> {cart.address_1}, {cart.city}, {cart.state} {cart.zip}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="button"
+              onClick={handleStartNewOrder}
+              className="btn-primary"
+              style={{
+                marginTop: 32,
+                padding: '14px 32px',
+                fontSize: 15,
+              }}
+            >
+              Return to Catalog
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
   )
 }

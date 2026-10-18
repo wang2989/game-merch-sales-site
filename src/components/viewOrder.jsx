@@ -1,13 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { itemsById } from '../data/items'
+import CheckoutStepper from './CheckoutStepper'
 
 export default function ViewOrder() {
   const { cart } = useCart()
   const navigate = useNavigate()
 
   const orderItems = Object.entries(cart.buyQuantity || {})
-    .filter(([_, qty]) => qty > 0)
+    .filter(([, qty]) => qty > 0)
     .map(([id, qty]) => {
       const item = itemsById[id] || { name: 'Item', price: 0 }
       return {
@@ -20,109 +21,131 @@ export default function ViewOrder() {
   const totalCost = orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
 
   const rawCard = cart.credit_card_number || ''
-  const maskedCard = rawCard.length >= 4 
-    ? `•••• •••• •••• ${rawCard.slice(-4)}` 
+  const maskedCard = rawCard.length >= 4
+    ? `•••• •••• •••• ${rawCard.slice(-4)}`
     : rawCard || 'Not provided'
 
   return (
-    <div style={{ maxWidth: 800, margin: '2rem auto', padding: '1.5rem', fontFamily: 'sans-serif' }}>
-      <h2>Review & Confirm Your Order</h2>
-      <p style={{ color: '#555' }}>Please review your order details, shipping address, and payment method below.</p>
+    <main className="site-main">
+      <div className="site-container">
+        <CheckoutStepper currentStep={4} />
 
-      {/* Items Summary Table */}
-      <section style={{ marginTop: '1.5rem' }}>
-        <h3>Items Ordered</h3>
-        {orderItems.length === 0 ? (
-          <p>No items in cart.</p>
-        ) : (
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '0.5rem' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #ccc', textAlign: 'left' }}>
-                <th style={{ padding: '8px' }}>Item</th>
-                <th style={{ padding: '8px' }}>Price</th>
-                <th style={{ padding: '8px' }}>Qty</th>
-                <th style={{ padding: '8px', textAlign: 'right' }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderItems.map((item) => (
-                <tr key={item.id} style={{ borderBottom: '1px solid #eee' }}>
-                  <td style={{ padding: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    {item.image && (
-                      <img 
-                        src={item.image} 
-                        alt={item.name} 
-                        style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: 4 }} 
-                      />
-                    )}
-                    <span>{item.name}</span>
-                  </td>
-                  <td style={{ padding: '8px' }}>${item.price.toFixed(2)}</td>
-                  <td style={{ padding: '8px' }}>{item.quantity}</td>
-                  <td style={{ padding: '8px', textAlign: 'right' }}>${item.lineTotal.toFixed(2)}</td>
-                </tr>
-              ))}
-            </tbody>
-            <tfoot>
-              <tr>
-                <td colSpan="3" style={{ padding: '12px 8px', fontWeight: 'bold', textAlign: 'right' }}>
-                  Total Cost:
-                </td>
-                <td style={{ padding: '12px 8px', fontWeight: 'bold', textAlign: 'right', fontSize: '1.15rem' }}>
-                  ${totalCost.toFixed(2)}
-                </td>
-              </tr>
-            </tfoot>
-          </table>
-        )}
-      </section>
+        <div className="review-layout">
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <h1 className="section-title">Review & Confirm Your Order</h1>
+            <p className="section-tagline">
+              Please review your items, delivery destination, and payment method before placing your order.
+            </p>
+          </div>
 
-      {/* Shipping Details */}
-      <section style={{ marginTop: '2rem', padding: '1rem', border: '1px solid #e0e0e0', borderRadius: 8 }}>
-        <h3>Shipping Details</h3>
-        <p><strong>Recipient Name:</strong> {cart.name || 'N/A'}</p>
-        <p><strong>Address Line 1:</strong> {cart.address_1 || 'N/A'}</p>
-        {cart.address_2 && <p><strong>Address Line 2:</strong> {cart.address_2}</p>}
-        <p>
-          <strong>City, State, Zip:</strong>{' '}
-          {[cart.city, cart.state, cart.zip].filter(Boolean).join(', ') || 'N/A'}
-        </p>
-      </section>
+          {/* Items Summary Section */}
+          <section className="review-section-card">
+            <h2 className="review-card-header">Items Ordered</h2>
+            {orderItems.length === 0 ? (
+              <p style={{ color: 'var(--color-ink-secondary)', fontSize: 14 }}>No items in cart.</p>
+            ) : (
+              <div style={{ overflowX: 'auto' }}>
+                <table className="review-table">
+                  <thead>
+                    <tr>
+                      <th>Item</th>
+                      <th>Price</th>
+                      <th>Qty</th>
+                      <th style={{ textAlign: 'right' }}>Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orderItems.map((item) => (
+                      <tr key={item.id}>
+                        <td>
+                          <div className="review-item-cell">
+                            {item.image ? (
+                              <img
+                                src={item.image}
+                                alt={item.name}
+                                className="review-thumb"
+                              />
+                            ) : (
+                              <div
+                                className="review-thumb"
+                                style={{ background: '#eee' }}
+                              />
+                            )}
+                            <span style={{ fontWeight: 600 }}>{item.name}</span>
+                          </div>
+                        </td>
+                        <td>${item.price.toFixed(2)}</td>
+                        <td>{item.quantity}</td>
+                        <td style={{ textAlign: 'right', fontWeight: 600 }}>
+                          ${item.lineTotal.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td colSpan="3" style={{ padding: '20px 12px 10px', fontWeight: 700, textAlign: 'right', fontSize: 16 }}>
+                        Total Cost:
+                      </td>
+                      <td style={{ padding: '20px 12px 10px', fontWeight: 800, textAlign: 'right', fontSize: '1.25rem', color: 'var(--color-ink)' }}>
+                        ${totalCost.toFixed(2)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            )}
+          </section>
 
-      {/* Payment Details */}
-      <section style={{ marginTop: '1.5rem', padding: '1rem', border: '1px solid #e0e0e0', borderRadius: 8 }}>
-        <h3>Payment Information</h3>
-        <p><strong>Cardholder Name:</strong> {cart.card_holder_name || 'N/A'}</p>
-        <p><strong>Card Number:</strong> {maskedCard}</p>
-        <p><strong>Expiration Date:</strong> {cart.expir_date || 'N/A'}</p>
-      </section>
+          {/* Shipping & Payment Details Cards */}
+          <div className="review-detail-grid" style={{ marginBottom: 32 }}>
+            {/* Shipping Box */}
+            <div className="review-detail-box">
+              <div className="review-detail-title">Shipping Details</div>
+              <p className="review-detail-line"><strong>Recipient:</strong> {cart.name || 'N/A'}</p>
+              <p className="review-detail-line"><strong>Address 1:</strong> {cart.address_1 || 'N/A'}</p>
+              {cart.address_2 && (
+                <p className="review-detail-line"><strong>Address 2:</strong> {cart.address_2}</p>
+              )}
+              <p className="review-detail-line">
+                <strong>City, State, Zip:</strong>{' '}
+                {[cart.city, cart.state, cart.zip].filter(Boolean).join(', ') || 'N/A'}
+              </p>
+            </div>
 
-      {/* Actions */}
-      <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-        <button
-          type="button"
-          onClick={() => navigate('/paymentEntry')}
-          style={{ padding: '10px 18px', cursor: 'pointer', borderRadius: 4, border: '1px solid #ccc' }}
-        >
-          Back to Payment
-        </button>
-        <button
-          type="button"
-          onClick={() => navigate('/confirmation')}
-          disabled={orderItems.length === 0}
-          style={{
-            padding: '10px 24px',
-            backgroundColor: orderItems.length === 0 ? '#aaa' : '#0070f3',
-            color: '#fff',
-            border: 'none',
-            borderRadius: 4,
-            fontWeight: 'bold',
-            cursor: orderItems.length === 0 ? 'not-allowed' : 'pointer',
-          }}
-        >
-          Confirm & Place Order
-        </button>
+            {/* Payment Box */}
+            <div className="review-detail-box">
+              <div className="review-detail-title">Payment Information</div>
+              <p className="review-detail-line"><strong>Cardholder:</strong> {cart.card_holder_name || 'N/A'}</p>
+              <p className="review-detail-line"><strong>Card Number:</strong> {maskedCard}</p>
+              <p className="review-detail-line"><strong>Expiration Date:</strong> {cart.expir_date || 'N/A'}</p>
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+            <button
+              type="button"
+              onClick={() => navigate('/paymentEntry')}
+              className="btn-secondary"
+            >
+              Back to Payment
+            </button>
+            <button
+              type="button"
+              onClick={() => navigate('/confirmation')}
+              disabled={orderItems.length === 0}
+              className="btn-primary"
+              style={{
+                padding: '12px 28px',
+                fontSize: 15,
+              }}
+            >
+              Confirm & Place Order
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   )
 }

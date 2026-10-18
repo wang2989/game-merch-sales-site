@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 import Confirmation from './components/confirmation'
 import PaymentEntry from './components/paymentEntry'
 import Purchase from './components/purchase'
@@ -13,16 +14,19 @@ function App() {
   return (
     <CartProvider>
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Navigate to="/purchase" replace />} />
-          <Route path="/purchase" element={<Purchase />} />
-          <Route path="/shippingEntry" element={<ShippingEntry />} />
-          <Route path="/paymentEntry" element={<PaymentEntry />} />
-          <Route path="/confirmation" element={<Confirmation />} />
-          <Route path="/viewOrder" element={<ViewOrder />} />
-          <Route path="/shoppingCart" element={<ShoppingCart />} />
-        </Routes>
+        <div className="site-wrapper">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Navigate to="/purchase" replace />} />
+            <Route path="/purchase" element={<Purchase />} />
+            <Route path="/shippingEntry" element={<ShippingEntry />} />
+            <Route path="/paymentEntry" element={<PaymentEntry />} />
+            <Route path="/confirmation" element={<Confirmation />} />
+            <Route path="/viewOrder" element={<ViewOrder />} />
+            <Route path="/shoppingCart" element={<ShoppingCart />} />
+          </Routes>
+          <Footer />
+        </div>
       </BrowserRouter>
     </CartProvider>
   )
