@@ -26,14 +26,20 @@ export default function Navbar() {
             <span className="brand-mark">®</span>
           </Link>
 
-          <div className="navbar-nav">
-            <Link
-              to="/purchase"
-              className={`nav-link ${location.pathname === '/purchase' || location.pathname === '/' ? 'active' : ''}`}
-            >
-              Catalog
-            </Link>
-          </div>
+<div className="navbar-nav">
+  <Link
+    to="/purchase"
+    className={`nav-link ${location.pathname === '/purchase' || location.pathname === '/' ? 'active' : ''}`}
+  >
+    Catalog
+  </Link>
+  <Link
+    to="/contact"
+    className={`nav-link ${location.pathname === '/contact' ? 'active' : ''}`}
+  >
+    Contact
+  </Link>
+</div>
 
           <div className="navbar-actions">
             <Link
