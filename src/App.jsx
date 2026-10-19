@@ -9,6 +9,7 @@ import ShoppingCart from './components/shoppingCart'
 import ViewOrder from './components/viewOrder'
 import { CartProvider } from './context/CartContext'
 import './App.css'
+import ContactUs from './components/ContactUs'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
             <Route path="/confirmation" element={<Confirmation />} />
             <Route path="/viewOrder" element={<ViewOrder />} />
             <Route path="/shoppingCart" element={<ShoppingCart />} />
+            <Route path="/contact" element={<ContactUs />} />
           </Routes>
           <Footer />
         </div>
