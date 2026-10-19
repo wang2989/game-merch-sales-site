@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Confirmation from './components/confirmation'
+import AboutUs from './components/aboutUs'
 import PaymentEntry from './components/paymentEntry'
 import Purchase from './components/purchase'
 import ShippingEntry from './components/shippingEntry'
@@ -19,6 +20,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Navigate to="/purchase" replace />} />
             <Route path="/purchase" element={<Purchase />} />
+            <Route path="/about-us" element={<AboutUs />} />
             <Route path="/shippingEntry" element={<ShippingEntry />} />
             <Route path="/paymentEntry" element={<PaymentEntry />} />
             <Route path="/confirmation" element={<Confirmation />} />

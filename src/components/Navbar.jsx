@@ -33,6 +33,12 @@ export default function Navbar() {
             >
               Catalog
             </Link>
+            <Link
+              to="/about-us"
+              className={`nav-link ${location.pathname === '/about-us' ? 'active' : ''}`}
+            >
+              About Us
+            </Link>
           </div>
 
           <div className="navbar-actions">
