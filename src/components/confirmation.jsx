@@ -2,10 +2,10 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 export default function Confirmation() {
-  const { cart, resetCart, itemsById } = useCart()
+  const { cart, resetCart, itemsById, orderConfirmation } = useCart()
   const navigate = useNavigate()
 
-  const confirmationNumber = 'ORD-2026-X8892'
+  const confirmationNumber = orderConfirmation?.confirmationNumber
 
   const orderItems = Object.entries(cart.buyQuantity || {})
     .filter(([, qty]) => qty > 0)
@@ -18,7 +18,8 @@ export default function Confirmation() {
       }
     })
 
-  const totalCost = orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
+  const totalCost = orderConfirmation?.totalAmount ??
+    orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
 
   const handleStartNewOrder = () => {
     resetCart()

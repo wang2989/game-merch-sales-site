@@ -34,6 +34,8 @@ export const CartContext = createContext({
   itemsById: {},
   inventoryStatus: 'loading',
   inventoryError: '',
+  orderConfirmation: null,
+  setOrderConfirmation: () => {},
 })
 
 export function CartProvider({ children }) {
@@ -44,6 +46,7 @@ export function CartProvider({ children }) {
   const [items, setItems] = useState([])
   const [inventoryStatus, setInventoryStatus] = useState('loading')
   const [inventoryError, setInventoryError] = useState('')
+  const [orderConfirmation, setOrderConfirmation] = useState(null)
 
   useEffect(() => {
     const controller = new AbortController()
@@ -77,6 +80,7 @@ export function CartProvider({ children }) {
       ...initialOrder,
       buyQuantity: { ...initialOrder.buyQuantity },
     })
+    setOrderConfirmation(null)
   }, [])
 
   const value = useMemo(() => {
@@ -90,6 +94,8 @@ export function CartProvider({ children }) {
       itemsById,
       inventoryStatus,
       inventoryError,
+      orderConfirmation,
+      setOrderConfirmation,
       setCart,
       setOrder: setCart,
       setCartOrder: setCart,
@@ -103,7 +109,7 @@ export function CartProvider({ children }) {
       },
     }
     return contextValue
-  }, [cart, items, inventoryStatus, inventoryError, updateCart, resetCart])
+  }, [cart, items, inventoryStatus, inventoryError, orderConfirmation, updateCart, resetCart])
 
   return createElement(CartContext.Provider, { value }, children)
 }
