@@ -1,10 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { itemsById } from '../data/items'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ViewOrder() {
-  const { cart } = useCart()
+  const { cart, itemsById } = useCart()
   const navigate = useNavigate()
 
   const orderItems = Object.entries(cart.buyQuantity || {})

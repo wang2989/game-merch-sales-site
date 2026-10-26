@@ -1,12 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { itemsById } from '../data/items'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ShoppingCart() {
   const navigate = useNavigate()
-  const { cart, updateCart, resetCart } = useCart()
+  const { cart, updateCart, resetCart, itemsById } = useCart()
 
   const handleQuantityChange = (itemId, value) => {
     const max = itemsById[itemId]?.stock ?? Infinity
@@ -254,4 +253,3 @@ export default function ShoppingCart() {
     </main>
   )
 }
-

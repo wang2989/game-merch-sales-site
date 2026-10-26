@@ -1,9 +1,8 @@
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { itemsById } from '../data/items'
 
 export default function Confirmation() {
-  const { cart, resetCart } = useCart()
+  const { cart, resetCart, itemsById } = useCart()
   const navigate = useNavigate()
 
   const confirmationNumber = 'ORD-2026-X8892'
