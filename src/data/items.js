@@ -1,5 +1,19 @@
+import fallguysShirt from '../assets/fallguys_shirt.jpg'
+import fortniteSweater from '../assets/fortnite_sweater.jpg'
+import marioHat from '../assets/mario_hat.jpg'
+import minecraftHoodie from '../assets/minecraft_hoodie.jpeg'
+import robloxShirt from '../assets/roblox_shirt.jpeg'
+
 const inventoryUrl =
   'https://21eoglg9h6.execute-api.us-east-2.amazonaws.com/dev/inventory-management/inventory'
+
+const imagesByProductName = {
+  'fallguys shirt': fallguysShirt,
+  'fortnite sweater': fortniteSweater,
+  'mario hat': marioHat,
+  'minecraft hoodie': minecraftHoodie,
+  'roblox shirt': robloxShirt,
+}
 
 export async function fetchItems(signal) {
   const response = await fetch(inventoryUrl, { signal })
@@ -30,7 +44,7 @@ export async function fetchItems(signal) {
       name: item.name,
       price: item.price,
       stock: item.stock,
-      image: '',
+      image: imagesByProductName[item.name.trim().toLowerCase()] ?? '',
     }
   })
 }

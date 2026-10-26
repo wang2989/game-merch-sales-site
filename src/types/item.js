@@ -6,7 +6,7 @@
  * @property {string} name     Display name
  * @property {number} price    Unit price in USD
  * @property {number} stock    Quantity available to purchase
- * @property {string} [image]  Image URL (e.g. imported from src/assets); blank for now
+ * @property {string} [image]  Image URL (e.g. imported from src/assets); blank when unavailable
  */
 
 /** @returns {Item} */
