@@ -1,11 +1,14 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { itemsById } from '../data/items'
+import { placeOrder } from '../data/orders'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ViewOrder() {
-  const { cart } = useCart()
+  const { cart, itemsById, setOrderConfirmation } = useCart()
   const navigate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [orderError, setOrderError] = useState('')
 
   const orderItems = Object.entries(cart.buyQuantity || {})
     .filter(([, qty]) => qty > 0)
@@ -19,6 +22,37 @@ export default function ViewOrder() {
     })
 
   const totalCost = orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
+
+  const handlePlaceOrder = async () => {
+    setIsSubmitting(true)
+    setOrderError('')
+
+    try {
+      const result = await placeOrder({
+        items: orderItems.map(({ id, quantity }) => ({ id, quantity })),
+        payment: {
+          cardNumber: cart.credit_card_number,
+          expirationDate: cart.expir_date,
+          cvvCode: cart.cvvCode,
+          cardHolderName: cart.card_holder_name,
+        },
+        shipping: {
+          name: cart.name,
+          addressLine1: cart.address_1,
+          addressLine2: cart.address_2,
+          city: cart.city,
+          state: cart.state,
+          zip: cart.zip,
+        },
+      })
+      setOrderConfirmation(result)
+      navigate('/confirmation')
+    } catch (error) {
+      setOrderError(error instanceof Error ? error.message : String(error))
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   const rawCard = cart.credit_card_number || ''
   const maskedCard = rawCard.length >= 4
@@ -133,17 +167,22 @@ export default function ViewOrder() {
             </button>
             <button
               type="button"
-              onClick={() => navigate('/confirmation')}
-              disabled={orderItems.length === 0}
+              onClick={handlePlaceOrder}
+              disabled={orderItems.length === 0 || isSubmitting}
               className="btn-primary"
               style={{
                 padding: '12px 28px',
                 fontSize: 15,
               }}
             >
-              Confirm & Place Order
+              {isSubmitting ? 'Placing Order...' : 'Confirm & Place Order'}
             </button>
           </div>
+          {orderError && (
+            <p className="form-alert-error" role="alert">
+              {orderError}
+            </p>
+          )}
         </div>
       </div>
     </main>

@@ -1,11 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
-import { items } from '../data/items'
 import ItemCard from './ItemCard'
 
 export default function Purchase() {
-  const { cart, updateCart } = useCart()
+  const { cart, updateCart, items, inventoryStatus, inventoryError } = useCart()
   const [selectedCategory, setSelectedCategory] = useState('all')
 
   const handleQuantityChange = (itemId, qty) => {
@@ -89,14 +88,20 @@ export default function Purchase() {
           </div>
 
           <div className="product-grid">
-            {filteredItems.map((item) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                quantity={cart.buyQuantity[item.id] ?? 0}
-                onQuantityChange={handleQuantityChange}
-              />
-            ))}
+            {inventoryStatus === 'loading' ? (
+              <p role="status">Loading inventory...</p>
+            ) : inventoryStatus === 'error' ? (
+              <p role="alert">Unable to load inventory: {inventoryError}</p>
+            ) : (
+              filteredItems.map((item) => (
+                <ItemCard
+                  key={item.id}
+                  item={item}
+                  quantity={cart.buyQuantity[item.id] ?? 0}
+                  onQuantityChange={handleQuantityChange}
+                />
+              ))
+            )}
           </div>
 
           {/* Cart Status Bar */}
@@ -117,4 +122,3 @@ export default function Purchase() {
     </main>
   )
 }
-

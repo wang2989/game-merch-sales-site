@@ -1,4 +1,5 @@
-import { createContext, useContext, useState, useMemo, useCallback, createElement } from 'react'
+import { createContext, useContext, useState, useMemo, useCallback, createElement, useEffect } from 'react'
+import { fetchItems } from '../data/items'
 
 export const initialOrder = {
   // Map of item id -> quantity; only items with a quantity are present
@@ -29,6 +30,12 @@ export const CartContext = createContext({
   updateOrder: () => {},
   resetCart: () => {},
   resetOrder: () => {},
+  items: [],
+  itemsById: {},
+  inventoryStatus: 'loading',
+  inventoryError: '',
+  orderConfirmation: null,
+  setOrderConfirmation: () => {},
 })
 
 export function CartProvider({ children }) {
@@ -36,6 +43,27 @@ export function CartProvider({ children }) {
     ...initialOrder,
     buyQuantity: { ...initialOrder.buyQuantity },
   }))
+  const [items, setItems] = useState([])
+  const [inventoryStatus, setInventoryStatus] = useState('loading')
+  const [inventoryError, setInventoryError] = useState('')
+  const [orderConfirmation, setOrderConfirmation] = useState(null)
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    fetchItems(controller.signal)
+      .then((inventory) => {
+        setItems(inventory)
+        setInventoryStatus('loaded')
+      })
+      .catch((error) => {
+        if (error?.name === 'AbortError') return
+        setInventoryError(error instanceof Error ? error.message : String(error))
+        setInventoryStatus('error')
+      })
+
+    return () => controller.abort()
+  }, [])
 
   const updateCart = useCallback((updates) => {
     setCart((prev) => {
@@ -52,14 +80,22 @@ export function CartProvider({ children }) {
       ...initialOrder,
       buyQuantity: { ...initialOrder.buyQuantity },
     })
+    setOrderConfirmation(null)
   }, [])
 
   const value = useMemo(() => {
+    const itemsById = Object.fromEntries(items.map((item) => [item.id, item]))
     const contextValue = {
       cart,
       order: cart,
       cartOrder: cart,
       ...cart,
+      items,
+      itemsById,
+      inventoryStatus,
+      inventoryError,
+      orderConfirmation,
+      setOrderConfirmation,
       setCart,
       setOrder: setCart,
       setCartOrder: setCart,
@@ -73,7 +109,7 @@ export function CartProvider({ children }) {
       },
     }
     return contextValue
-  }, [cart, updateCart, resetCart])
+  }, [cart, items, inventoryStatus, inventoryError, orderConfirmation, updateCart, resetCart])
 
   return createElement(CartContext.Provider, { value }, children)
 }
