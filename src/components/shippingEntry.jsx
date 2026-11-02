@@ -17,6 +17,7 @@ export default function ShippingEntry() {
   const navigate = useNavigate()
   const [fields, setFields] = useState(() => ({
     name: cart.name,
+    email: cart.shipping_email || cart.email || '',
     addressLine1: cart.address_1,
     addressLine2: cart.address_2,
     city: cart.city,
@@ -39,8 +40,15 @@ export default function ShippingEntry() {
       return
     }
 
+    const trimmedEmail = fields.email.trim()
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setError('Please enter a valid shipping email address (or leave it blank).')
+      return
+    }
+
     updateCart({
       name: fields.name.trim(),
+      shipping_email: trimmedEmail,
       address_1: fields.addressLine1.trim(),
       address_2: fields.addressLine2.trim(),
       city: fields.city.trim(),
@@ -84,6 +92,25 @@ export default function ShippingEntry() {
                     placeholder="Jane Doe"
                     className="form-input"
                   />
+                </div>
+
+                {/* Shipping Email (Optional) */}
+                <div className="form-group">
+                  <label htmlFor="shipping-email" className="form-label">
+                    Shipping Contact Email (Optional)
+                  </label>
+                  <input
+                    id="shipping-email"
+                    name="email"
+                    type="email"
+                    value={fields.email}
+                    onChange={(e) => updateField('email', e.target.value)}
+                    placeholder="jane.doe@example.com"
+                    className="form-input"
+                  />
+                  <span style={{ display: 'block', fontSize: 11, color: 'var(--color-ink-secondary)', marginTop: 4 }}>
+                    Optional email for delivery updates and tracking
+                  </span>
                 </div>
 
                 {/* Address Line 1 */}

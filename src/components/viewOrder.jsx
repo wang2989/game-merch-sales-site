@@ -5,10 +5,18 @@ import { placeOrder } from '../data/orders'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ViewOrder() {
-  const { cart, itemsById, setOrderConfirmation } = useCart()
+  const { cart, updateCart, resetCart, itemsById, setOrderConfirmation, refreshInventory } = useCart()
   const navigate = useNavigate()
+  const [orderEmail, setOrderEmail] = useState(() => cart.email || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [orderError, setOrderError] = useState('')
+
+  const handleEmailChange = (e) => {
+    const val = e.target.value
+    setOrderEmail(val)
+    updateCart({ email: val })
+    setOrderError('')
+  }
 
   const orderItems = Object.entries(cart.buyQuantity || {})
     .filter(([, qty]) => qty > 0)
@@ -24,6 +32,12 @@ export default function ViewOrder() {
   const totalCost = orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
 
   const handlePlaceOrder = async () => {
+    const trimmedOrderEmail = orderEmail.trim()
+    if (trimmedOrderEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedOrderEmail)) {
+      setOrderError('Please enter a valid email address (or leave it blank).')
+      return
+    }
+
     setIsSubmitting(true)
     setOrderError('')
 
@@ -43,12 +57,32 @@ export default function ViewOrder() {
           city: cart.city,
           state: cart.state,
           zip: cart.zip,
+          email: cart.shipping_email?.trim() || '',
+        },
+        email: trimmedOrderEmail || '',
+      })
+      setOrderConfirmation({
+        ...result,
+        items: orderItems,
+        totalCost,
+        name: cart.name,
+        email: trimmedOrderEmail || cart.shipping_email?.trim() || '',
+        shipping: {
+          name: cart.name,
+          address_1: cart.address_1,
+          address_2: cart.address_2,
+          city: cart.city,
+          state: cart.state,
+          zip: cart.zip,
+          email: cart.shipping_email?.trim() || '',
         },
       })
-      setOrderConfirmation(result)
+      resetCart()
+      refreshInventory({ force: true })
       navigate('/confirmation')
     } catch (error) {
       setOrderError(error instanceof Error ? error.message : String(error))
+      refreshInventory({ force: true })
     } finally {
       setIsSubmitting(false)
     }
@@ -137,6 +171,9 @@ export default function ViewOrder() {
             <div className="review-detail-box">
               <div className="review-detail-title">Shipping Details</div>
               <p className="review-detail-line"><strong>Recipient:</strong> {cart.name || 'N/A'}</p>
+              {cart.shipping_email && (
+                <p className="review-detail-line"><strong>Shipping Email:</strong> {cart.shipping_email}</p>
+              )}
               <p className="review-detail-line"><strong>Address 1:</strong> {cart.address_1 || 'N/A'}</p>
               {cart.address_2 && (
                 <p className="review-detail-line"><strong>Address 2:</strong> {cart.address_2}</p>
@@ -155,6 +192,28 @@ export default function ViewOrder() {
               <p className="review-detail-line"><strong>Expiration Date:</strong> {cart.expir_date || 'N/A'}</p>
             </div>
           </div>
+
+          {/* Order Confirmation Email Section */}
+          <section className="review-section-card" style={{ marginBottom: 32 }}>
+            <h2 className="review-card-header">Order Confirmation Email</h2>
+            <p style={{ fontSize: 13, color: 'var(--color-ink-secondary)', marginBottom: 12 }}>
+              Where should we send your order confirmation receipt?
+            </p>
+            <div style={{ maxWidth: 440 }}>
+              <input
+                id="view-order-email"
+                type="email"
+                value={orderEmail}
+                onChange={handleEmailChange}
+                placeholder="player@example.com (Optional)"
+                className="form-input"
+                style={{ width: '100%', fontSize: 14, padding: '10px 14px' }}
+              />
+              <span style={{ display: 'block', fontSize: 11, color: 'var(--color-ink-secondary)', marginTop: 4 }}>
+                Optional: Leave blank if you prefer no email receipt.
+              </span>
+            </div>
+          </section>
 
           {/* Actions */}
           <div style={{ display: 'flex', gap: 16, justifyContent: 'flex-end', flexWrap: 'wrap' }}>

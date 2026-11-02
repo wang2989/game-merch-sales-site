@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useMemo, useCallback, createElement, useEffect } from 'react'
+import { createContext, useContext, useState, useMemo, useCallback, createElement, useEffect, useRef } from 'react'
 import { fetchItems } from '../data/items'
 
 export const initialOrder = {
@@ -14,6 +14,8 @@ export const initialOrder = {
   city: '',
   state: '',
   zip: '',
+  email: '',
+  shipping_email: '',
 }
 
 export const initialCart = initialOrder
@@ -34,6 +36,7 @@ export const CartContext = createContext({
   itemsById: {},
   inventoryStatus: 'loading',
   inventoryError: '',
+  refreshInventory: async () => {},
   orderConfirmation: null,
   setOrderConfirmation: () => {},
 })
@@ -48,22 +51,75 @@ export function CartProvider({ children }) {
   const [inventoryError, setInventoryError] = useState('')
   const [orderConfirmation, setOrderConfirmation] = useState(null)
 
-  useEffect(() => {
-    const controller = new AbortController()
+  const itemsRef = useRef(items)
+  itemsRef.current = items
 
-    fetchItems(controller.signal)
-      .then((inventory) => {
+  const inFlightPromiseRef = useRef(null)
+  const lastFetchedTimeRef = useRef(0)
+  const activeControllerRef = useRef(null)
+
+  const refreshInventory = useCallback(async ({ silent = true, force = false } = {}) => {
+    // Return existing in-flight promise if one is already running
+    if (inFlightPromiseRef.current && !force) {
+      return inFlightPromiseRef.current
+    }
+
+    // Cooldown check: prevent duplicate requests if fetched within 2 seconds
+    const now = Date.now()
+    if (!force && now - lastFetchedTimeRef.current < 2000 && itemsRef.current.length > 0) {
+      return itemsRef.current
+    }
+
+    if (force && activeControllerRef.current) {
+      activeControllerRef.current.abort()
+    }
+
+    const controller = new AbortController()
+    activeControllerRef.current = controller
+
+    // Only switch status to loading on cold load or when silent is explicitly false
+    setInventoryStatus((prevStatus) => {
+      if (prevStatus === 'loaded' && silent) {
+        return prevStatus
+      }
+      return 'loading'
+    })
+
+    const fetchPromise = (async () => {
+      try {
+        const inventory = await fetchItems(controller.signal)
         setItems(inventory)
         setInventoryStatus('loaded')
-      })
-      .catch((error) => {
+        setInventoryError('')
+        lastFetchedTimeRef.current = Date.now()
+        return inventory
+      } catch (error) {
         if (error?.name === 'AbortError') return
-        setInventoryError(error instanceof Error ? error.message : String(error))
-        setInventoryStatus('error')
-      })
+        setItems((prevItems) => {
+          // Graceful fallback: preserve existing items if background refresh encounters an issue
+          if (prevItems.length === 0) {
+            setInventoryStatus('error')
+            setInventoryError(error instanceof Error ? error.message : String(error))
+          }
+          return prevItems
+        })
+      } finally {
+        if (inFlightPromiseRef.current === fetchPromise) {
+          inFlightPromiseRef.current = null
+        }
+        if (activeControllerRef.current === controller) {
+          activeControllerRef.current = null
+        }
+      }
+    })()
 
-    return () => controller.abort()
+    inFlightPromiseRef.current = fetchPromise
+    return fetchPromise
   }, [])
+
+  useEffect(() => {
+    refreshInventory({ silent: false })
+  }, [refreshInventory])
 
   const updateCart = useCallback((updates) => {
     setCart((prev) => {
@@ -80,7 +136,6 @@ export function CartProvider({ children }) {
       ...initialOrder,
       buyQuantity: { ...initialOrder.buyQuantity },
     })
-    setOrderConfirmation(null)
   }, [])
 
   const value = useMemo(() => {
@@ -94,6 +149,7 @@ export function CartProvider({ children }) {
       itemsById,
       inventoryStatus,
       inventoryError,
+      refreshInventory,
       orderConfirmation,
       setOrderConfirmation,
       setCart,
@@ -109,7 +165,7 @@ export function CartProvider({ children }) {
       },
     }
     return contextValue
-  }, [cart, items, inventoryStatus, inventoryError, orderConfirmation, updateCart, resetCart])
+  }, [cart, items, inventoryStatus, inventoryError, refreshInventory, orderConfirmation, updateCart, resetCart])
 
   return createElement(CartContext.Provider, { value }, children)
 }
@@ -120,6 +176,25 @@ export function useCart() {
     throw new Error('useCart must be used within a CartProvider')
   }
   return context
+}
+
+export function useInventorySync() {
+  const { refreshInventory } = useCart()
+
+  useEffect(() => {
+    // Dispatch GET request on page display
+    refreshInventory()
+
+    // Dispatch GET request when user returns to window/tab
+    const handleFocus = () => {
+      refreshInventory()
+    }
+
+    window.addEventListener('focus', handleFocus)
+    return () => {
+      window.removeEventListener('focus', handleFocus)
+    }
+  }, [refreshInventory])
 }
 
 export const useCartContext = useCart

@@ -2,27 +2,36 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 export default function Confirmation() {
-  const { cart, resetCart, itemsById, orderConfirmation } = useCart()
+  const { cart, resetCart, itemsById, orderConfirmation, setOrderConfirmation } = useCart()
   const navigate = useNavigate()
 
   const confirmationNumber = orderConfirmation?.confirmationNumber
 
-  const orderItems = Object.entries(cart.buyQuantity || {})
-    .filter(([, qty]) => qty > 0)
-    .map(([id, qty]) => {
-      const item = itemsById[id] || { name: 'Item', price: 0 }
-      return {
-        ...item,
-        quantity: qty,
-        lineTotal: item.price * qty,
-      }
-    })
+  const orderItems = orderConfirmation?.items?.length
+    ? orderConfirmation.items
+    : Object.entries(cart.buyQuantity || {})
+        .filter(([, qty]) => qty > 0)
+        .map(([id, qty]) => {
+          const item = itemsById[id] || { name: 'Item', price: 0 }
+          return {
+            ...item,
+            quantity: qty,
+            lineTotal: item.price * qty,
+          }
+        })
 
-  const totalCost = orderConfirmation?.totalAmount ??
-    orderItems.reduce((acc, item) => acc + item.lineTotal, 0)
+  const totalCost =
+    orderConfirmation?.totalAmount ??
+    orderConfirmation?.totalCost ??
+    orderItems.reduce((acc, item) => acc + (item.lineTotal || item.price * item.quantity), 0)
+
+  const customerName = orderConfirmation?.name || cart.name || ''
+  const customerEmail = orderConfirmation?.email || cart.email || cart.shipping_email || ''
+  const shippingInfo = orderConfirmation?.shipping || cart
 
   const handleStartNewOrder = () => {
     resetCart()
+    setOrderConfirmation(null)
     navigate('/purchase')
   }
 
@@ -36,10 +45,12 @@ export default function Confirmation() {
             </div>
 
             <h1 className="form-title" style={{ fontSize: '2rem', marginBottom: 8 }}>
-              Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
+              Thank You for Your Order{customerName ? `, ${customerName}` : ''}!
             </h1>
             <p className="form-description">
-              Your transaction has been processed successfully. A confirmation receipt has been sent.
+              {customerEmail
+                ? `Your transaction has been processed successfully. A confirmation receipt has been sent to ${customerEmail}.`
+                : 'Your transaction has been processed successfully. A confirmation receipt has been generated.'}
             </p>
 
             {/* Confirmation Voucher Badge — Mishmash Style */}
@@ -80,7 +91,7 @@ export default function Confirmation() {
                     <span>
                       <strong>{item.name}</strong> &times; {item.quantity}
                     </span>
-                    <span style={{ fontWeight: 600 }}>${item.lineTotal.toFixed(2)}</span>
+                    <span style={{ fontWeight: 600 }}>${(item.lineTotal || item.price * item.quantity).toFixed(2)}</span>
                   </li>
                 ))}
               </ul>
@@ -98,9 +109,9 @@ export default function Confirmation() {
                 <span>${totalCost.toFixed(2)}</span>
               </div>
 
-              {cart.city && (
+              {shippingInfo?.city && (
                 <p style={{ fontSize: 13, color: 'var(--color-ink-secondary)', marginTop: 16, lineHeight: 1.4 }}>
-                  <strong>Delivering to:</strong> {cart.address_1}, {cart.city}, {cart.state} {cart.zip}
+                  <strong>Delivering to:</strong> {shippingInfo.address_1}, {shippingInfo.city}, {shippingInfo.state} {shippingInfo.zip}
                 </p>
               )}
             </div>

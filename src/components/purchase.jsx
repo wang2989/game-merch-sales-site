@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
+import { useCart, useInventorySync } from '../context/CartContext'
 import ItemCard from './ItemCard'
 
 export default function Purchase() {
+  useInventorySync()
   const { cart, updateCart, items, inventoryStatus, inventoryError } = useCart()
 
   const handleQuantityChange = (itemId, qty) => {
@@ -26,7 +27,7 @@ export default function Purchase() {
                 <span>✦</span>
                 <span>The 2026 Collection</span>
               </div>
-              <h1 className="hero-title">Creative gear for serious players.</h1>
+              <h1 className="hero-title">Creative gear for fans & players.</h1>
               <p className="hero-subtitle">
                 Designed with meticulous attention to detail. Minimalist, ethical, and built for long sessions.
               </p>
@@ -54,9 +55,9 @@ export default function Purchase() {
           </div>
 
           <div className="product-grid">
-            {inventoryStatus === 'loading' ? (
+            {inventoryStatus === 'loading' && items.length === 0 ? (
               <p role="status">Loading inventory...</p>
-            ) : inventoryStatus === 'error' ? (
+            ) : inventoryStatus === 'error' && items.length === 0 ? (
               <p role="alert">Unable to load inventory: {inventoryError}</p>
             ) : (
               items.map((item) => (
