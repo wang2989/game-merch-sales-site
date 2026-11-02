@@ -7,22 +7,6 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
     onQuantityChange(item.id, qty)
   }
 
-  // Generate a playful badge based on item ID (Mishmash style)
-  const getBadge = () => {
-    if (item.id === 'minecraft-hoodie') {
-      return { text: '✦ Bestseller', variant: 'sun' }
-    }
-    if (item.id === 'fortnite-sweater') {
-      return { text: '● New Edition', variant: 'teal' }
-    }
-    if (item.id === 'mario-hat') {
-      return { text: '★ Iconic', variant: 'salmon' }
-    }
-    return { text: '✦ In Demand', variant: 'sun' }
-  }
-
-  const badge = getBadge()
-
   return (
     <article className="item-card">
       <div className="item-card-image-wrapper">
@@ -38,7 +22,6 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
             aria-label="No image"
           />
         )}
-        <span className={`item-badge-pill ${badge.variant}`}>{badge.text}</span>
       </div>
 
       <div className="item-info">
