@@ -50,10 +50,11 @@ export default function AboutUs() {
       <section className="about-intro">
         <div className="site-container about-intro-inner">
           <p className="about-eyebrow">The story behind Relic Plaza</p>
-          <h1>Wear the worlds you love.</h1>
+          <h1>Collect the worlds you love.</h1>
           <p className="about-intro-copy">
-            We make gaming-inspired apparel for the moments beyond the screen:
-            comfortable, considered pieces made for players to show what they love.
+            We curate gaming-inspired apparel and collectibles for the moments beyond the screen.
+            Offering a thoughtful mix of everyday apparel, accessories, stickers, acrylic stands, and more,
+            our focus is on aesthetic and memorable pieces that let players celebrate the worlds they love.
           </p>
           <a className="about-text-link" href="#our-strategy">
             How we plan to grow <span aria-hidden="true">↓</span>
@@ -67,16 +68,17 @@ export default function AboutUs() {
             <p className="about-eyebrow">Why we exist</p>
             <h2>Our Mission</h2>
             <p>
-              To let gamers wear the worlds they love, with comfortable,
-              well-made apparel that feels like a power-up.
+              To let players celebrate and collect the worlds they love through
+              aesthetic apparel, charming accessories, and memorable keepsakes
+              crafted for life beyond the screen.
             </p>
           </article>
           <article className="about-purpose-card about-vision-card">
             <p className="about-eyebrow">Where we&apos;re going</p>
             <h2>Our Vision</h2>
             <p>
-              To be the go-to destination where every gamer finds gear that
-              shows who they are, on and off the screen.
+              To be the go-to destination where every gamer finds pieces that
+              show who they are and celebrate their journey, on and off the screen.
             </p>
           </article>
         </section>
@@ -88,25 +90,25 @@ export default function AboutUs() {
           </div>
           <div className="about-strategy-copy">
             <p>
-              Relic Plaza&apos;s strategy is to become the destination for gamers
-              who want to wear the worlds they love. We focus on high-quality
-              apparel, including hoodies, hats, and tees, inspired by the most
-              popular game communities, and we build each piece to be
-              comfortable and durable enough for everyday wear.
+              Relic Plaza&apos;s strategy is to become the premier destination for players
+              who want to bring the worlds they love into their everyday spaces.
+              We curate a balanced selection of cozy apparel and aesthetic collectibles—including
+              lifestyle accessories, stickers, acrylic stands, and desk pieces—designed
+              with subtle, thoughtful details that resonate with passionate gaming communities.
             </p>
             <p>
               To keep our community excited, we release limited-edition drops
-              timed to game launches and seasonal events, so every release
-              feels like finding a rare item. We strengthen customer loyalty
-              through community-driven initiatives such as fan art contests
-              and collaborations with gamer designers, and we keep our prices
-              accessible for students and young gamers. By pairing quality,
-              scarcity, and community, Relic Plaza aims to grow from a passion
-              project into a trusted brand in gaming apparel.
+              timed to game milestones and seasonal celebrations, so every release
+              feels like finding a rare relic. We foster lasting loyalty
+              through community-driven initiatives, fan art spotlights,
+              and collaborations with independent designers, all while keeping prices
+              accessible for students and gaming enthusiasts. By pairing aesthetic curation,
+              craftsmanship, and community, Relic Plaza is growing from a passion
+              project into a trusted home for gaming apparel and collectibles.
             </p>
           </div>
           <ul className="about-strategy-pillars" aria-label="Strategic priorities">
-            <li><span>1</span> Quality for everyday wear</li>
+            <li><span>1</span> Curated apparel & collectibles</li>
             <li><span>2</span> Limited drops with meaning</li>
             <li><span>3</span> Community-led loyalty</li>
             <li><span>4</span> Accessible pricing</li>
