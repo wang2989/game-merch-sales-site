@@ -6,6 +6,7 @@ import AboutUs from './components/aboutUs'
 import PaymentEntry from './components/paymentEntry'
 import Purchase from './components/purchase'
 import Home from './components/Home'
+import ProductDetail from './components/ProductDetail'
 import ShippingEntry from './components/shippingEntry'
 import ShoppingCart from './components/shoppingCart'
 import ViewOrder from './components/viewOrder'
@@ -22,6 +23,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/purchase" element={<Purchase />} />
+            <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/shippingEntry" element={<ShippingEntry />} />
             <Route path="/paymentEntry" element={<PaymentEntry />} />

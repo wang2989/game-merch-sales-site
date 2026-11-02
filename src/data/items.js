@@ -31,6 +31,7 @@ export async function fetchItems(signal) {
       price: item.price,
       stock: item.stock,
       image: typeof item.image === 'string' ? item.image.trim() : '',
+      description: typeof item.description === 'string' ? item.description.trim() : '',
     }
   })
 }

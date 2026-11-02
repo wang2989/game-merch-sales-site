@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 /**
  * @param {{ item: import('../types/item').Item, quantity: number, onQuantityChange: (id: string, qty: number) => void }} props
  */
@@ -9,23 +11,29 @@ export default function ItemCard({ item, quantity, onQuantityChange }) {
 
   return (
     <article className="item-card">
-      <div className="item-card-image-wrapper">
-        {item.image ? (
-          <img
-            src={item.image}
-            alt={item.name}
-            className="item-card-image"
-          />
-        ) : (
-          <div
-            style={{ width: '100%', height: '100%', background: '#eee' }}
-            aria-label="No image"
-          />
-        )}
-      </div>
+      <Link to={`/product/${item.id}`} className="item-card-image-link" aria-label={`View details for ${item.name}`}>
+        <div className="item-card-image-wrapper">
+          {item.image ? (
+            <img
+              src={item.image}
+              alt={item.name}
+              className="item-card-image"
+            />
+          ) : (
+            <div
+              style={{ width: '100%', height: '100%', background: '#eee' }}
+              aria-label="No image"
+            />
+          )}
+        </div>
+      </Link>
 
       <div className="item-info">
-        <h3 className="item-name">{item.name}</h3>
+        <h3 className="item-name">
+          <Link to={`/product/${item.id}`} className="item-name-link">
+            {item.name}
+          </Link>
+        </h3>
         <div className="item-price-row">
           <span className="item-price">${item.price.toFixed(2)}</span>
           <span className="item-stock">

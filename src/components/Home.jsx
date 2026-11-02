@@ -42,6 +42,18 @@ export default function Home() {
   useInventorySync()
   const { items, inventoryStatus, inventoryError } = useCart()
   const [activeIndex, setActiveIndex] = useState(0)
+  const [windowWidth, setWindowWidth] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth : 1200
+  )
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth)
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  const relicDisplayCount = windowWidth >= 1200 ? 5 : windowWidth >= 960 ? 4 : 3
+  const visibleRelicsCount = items.length > 0 ? Math.min(items.length, relicDisplayCount) : relicDisplayCount
 
   const carouselStageRef = useRef(null)
   const touchStartX = useRef(null)
@@ -157,7 +169,7 @@ export default function Home() {
               <p className="home-section-eyebrow">Current Plaza</p>
               <h2 className="section-title">The Relics</h2>
               <p className="section-tagline">
-                Showing 3 curated staples from our collection
+                Showing {visibleRelicsCount} curated staples from our collection
               </p>
             </div>
             <Link to="/purchase" className="home-header-link">
@@ -166,15 +178,21 @@ export default function Home() {
             </Link>
           </div>
 
-          <div className="home-preview-grid">
+          <div
+            className={`home-preview-grid grid-cols-${relicDisplayCount}`}
+            style={{
+              gridTemplateColumns: `repeat(${relicDisplayCount}, minmax(0, 1fr))`,
+              maxWidth: relicDisplayCount === 5 ? '1140px' : relicDisplayCount === 4 ? '980px' : '860px',
+            }}
+          >
             {inventoryStatus === 'loading' && items.length === 0 ? (
               <p role="status" className="inventory-loading-text">Loading catalog preview...</p>
             ) : inventoryStatus === 'error' && items.length === 0 ? (
               <p role="alert" className="inventory-error-text">Unable to load catalog: {inventoryError}</p>
             ) : (
-              items.slice(0, 3).map((item) => (
+              items.slice(0, relicDisplayCount).map((item) => (
                 <article key={item.id} className="home-preview-card">
-                  <Link to="/purchase" className="home-preview-image-wrapper">
+                  <Link to={`/product/${item.id}`} className="home-preview-image-wrapper">
                     {item.image ? (
                       <img
                         src={item.image}
@@ -191,10 +209,10 @@ export default function Home() {
 
                   <div className="home-preview-bottom">
                     <h3 className="home-preview-name">
-                      <Link to="/purchase">{item.name}</Link>
+                      <Link to={`/product/${item.id}`}>{item.name}</Link>
                     </h3>
-                    <Link to="/purchase" className="home-preview-action-btn" aria-label={`View ${item.name} in catalog`}>
-                      <span>View in Catalog</span>
+                    <Link to={`/product/${item.id}`} className="home-preview-action-btn" aria-label={`View ${item.name} details`}>
+                      <span>View Details</span>
                       <span aria-hidden="true">&rarr;</span>
                     </Link>
                   </div>
@@ -283,32 +301,50 @@ export default function Home() {
                 if (diff < -Math.floor(N / 2)) diff += N
 
                 const isCenter = diff === 0
-                const isLeft = diff === -1
-                const isRight = diff === 1
+                const isNear = Math.abs(diff) === 1
+                const isFar = Math.abs(diff) === 2
 
-                let translateX = 0
-                if (isCenter) translateX = 0
-                else if (isLeft) translateX = -108
-                else if (isRight) translateX = 108
-                else if (diff < -1) translateX = diff * 108
-                else if (diff > 1) translateX = diff * 108
+                // Responsive visible limit: 3 on mobile (<768px), 4-5 on medium/desktop
+                const maxVisibleDiff = windowWidth < 768 ? 1 : 2
+                const isVisible = Math.abs(diff) <= maxVisibleDiff
+
+                const translateX = diff * 108
+
+                let scale = 0.75
+                let opacity = 0
+                let zIndex = 1
+
+                if (isCenter) {
+                  scale = 1.08
+                  opacity = 1
+                  zIndex = 10
+                } else if (isNear) {
+                  scale = 0.92
+                  opacity = 0.55
+                  zIndex = 5
+                } else if (isFar && isVisible) {
+                  scale = 0.8
+                  opacity = windowWidth < 1080 ? 0.28 : 0.4
+                  zIndex = 3
+                }
 
                 const cardStyle = {
-                  transform: `translateX(${translateX}%) scale(${isCenter ? 1.08 : 0.92})`,
-                  opacity: isCenter ? 1 : isLeft || isRight ? 0.45 : 0,
-                  zIndex: isCenter ? 10 : isLeft || isRight ? 5 : 0,
-                  pointerEvents: isCenter || isLeft || isRight ? 'auto' : 'none',
-                  visibility: Math.abs(diff) <= 2 ? 'visible' : 'hidden',
+                  transform: `translateX(${translateX}%) scale(${scale})`,
+                  opacity,
+                  zIndex,
+                  pointerEvents: isVisible ? 'auto' : 'none',
+                  visibility: isVisible ? 'visible' : 'hidden',
                 }
 
                 return (
                   <div
                     key={game.id}
-                    className={`stylized-game-card ${isCenter ? 'card-center' : isLeft ? 'card-side card-left' : isRight ? 'card-side card-right' : 'card-hidden'}`}
+                    className={`stylized-game-card ${isCenter ? 'card-center' : isNear ? 'card-side card-near' : isFar ? 'card-side card-far' : 'card-hidden'}`}
                     style={cardStyle}
                     onClick={() => {
-                      if (isLeft) handlePrev()
-                      else if (isRight) handleNext()
+                      if (diff !== 0) {
+                        setActiveIndex((prev) => (prev + diff + N) % N)
+                      }
                     }}
                   >
                     {isCenter ? (

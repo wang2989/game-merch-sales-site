@@ -27,7 +27,7 @@ export default function Purchase() {
                 <span>✦</span>
                 <span>The 2026 Collection</span>
               </div>
-              <h1 className="hero-title">Creative gear for serious players.</h1>
+              <h1 className="hero-title">Creative gear for fans & players.</h1>
               <p className="hero-subtitle">
                 Designed with meticulous attention to detail. Minimalist, ethical, and built for long sessions.
               </p>
