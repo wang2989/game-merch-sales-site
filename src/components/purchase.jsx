@@ -1,11 +1,9 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import ItemCard from './ItemCard'
 
 export default function Purchase() {
   const { cart, updateCart, items, inventoryStatus, inventoryError } = useCart()
-  const [selectedCategory, setSelectedCategory] = useState('all')
 
   const handleQuantityChange = (itemId, qty) => {
     updateCart((prev) => ({ buyQuantity: { ...prev.buyQuantity, [itemId]: qty } }))
@@ -16,23 +14,6 @@ export default function Purchase() {
     (acc, item) => acc + item.price * (cart.buyQuantity[item.id] ?? 0),
     0,
   )
-
-  const categories = [
-    { id: 'all', label: 'All Essentials' },
-    { id: 'apparel', label: 'Hoodies & Sweaters' },
-    { id: 'tees', label: 'Tees & Caps' },
-  ]
-
-  const filteredItems = items.filter((item) => {
-    if (selectedCategory === 'all') return true
-    if (selectedCategory === 'apparel') {
-      return item.id.includes('hoodie') || item.id.includes('sweater')
-    }
-    if (selectedCategory === 'tees') {
-      return item.id.includes('shirt') || item.id.includes('hat')
-    }
-    return true
-  })
 
   return (
     <main className="site-main">
@@ -68,22 +49,7 @@ export default function Purchase() {
           <div className="catalog-header">
             <div>
               <h2 className="section-title">The Catalog</h2>
-              <p className="section-tagline">Showing {filteredItems.length} curated gaming staples</p>
-            </div>
-
-            <div className="filter-pills" role="tablist" aria-label="Category filter">
-              {categories.map((cat) => (
-                <button
-                  key={cat.id}
-                  type="button"
-                  className={`filter-pill ${selectedCategory === cat.id ? 'active' : ''}`}
-                  onClick={() => setSelectedCategory(cat.id)}
-                  role="tab"
-                  aria-selected={selectedCategory === cat.id}
-                >
-                  {cat.label}
-                </button>
-              ))}
+              <p className="section-tagline">Showing {items.length} curated gaming staples</p>
             </div>
           </div>
 
@@ -93,7 +59,7 @@ export default function Purchase() {
             ) : inventoryStatus === 'error' ? (
               <p role="alert">Unable to load inventory: {inventoryError}</p>
             ) : (
-              filteredItems.map((item) => (
+              items.map((item) => (
                 <ItemCard
                   key={item.id}
                   item={item}
