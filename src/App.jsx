@@ -1,10 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Confirmation from './components/confirmation'
 import AboutUs from './components/aboutUs'
 import PaymentEntry from './components/paymentEntry'
 import Purchase from './components/purchase'
+import Home from './components/Home'
 import ShippingEntry from './components/shippingEntry'
 import ShoppingCart from './components/shoppingCart'
 import ViewOrder from './components/viewOrder'
@@ -19,7 +20,7 @@ function App() {
         <div className="site-wrapper">
           <Navbar />
           <Routes>
-            <Route path="/" element={<Navigate to="/purchase" replace />} />
+            <Route path="/" element={<Home />} />
             <Route path="/purchase" element={<Purchase />} />
             <Route path="/about-us" element={<AboutUs />} />
             <Route path="/shippingEntry" element={<ShippingEntry />} />

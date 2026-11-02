@@ -12,24 +12,30 @@ export default function Navbar() {
       {/* Top Announcement Ribbon */}
       <aside className="announcement-bar">
         <div className="announcement-content">
-          <span className="announcement-item">✦ More coming soon</span>
+          <span className="announcement-item">✦ More Items Coming Soon</span>
           <span className="announcement-sep" aria-hidden="true">|</span>
-          <span className="announcement-item">Exclusive offers today</span>
+          <span className="announcement-item">Grand Plaza Opening</span>
         </div>
       </aside>
 
       {/* Main Navigation Bar */}
       <nav className="site-navbar">
         <div className="site-container navbar-inner">
-          <Link to="/purchase" className="navbar-brand">
+          <Link to="/" className="navbar-brand">
             <span>relic plaza</span>
             <span className="brand-mark">®</span>
           </Link>
 
           <div className="navbar-nav">
             <Link
+              to="/"
+              className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
+            >
+              Home
+            </Link>
+            <Link
               to="/purchase"
-              className={`nav-link ${location.pathname === '/purchase' || location.pathname === '/' ? 'active' : ''}`}
+              className={`nav-link ${location.pathname === '/purchase' ? 'active' : ''}`}
             >
               Catalog
             </Link>

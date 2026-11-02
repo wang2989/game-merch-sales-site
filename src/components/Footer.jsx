@@ -7,7 +7,7 @@ export default function Footer() {
         <div className="footer-grid">
           {/* Brand Manifesto */}
           <div className="footer-brand">
-            <Link to="/purchase" className="navbar-brand">
+            <Link to="/" className="navbar-brand">
               <span>relic plaza</span>
               <span className="brand-mark">®</span>
             </Link>
@@ -20,10 +20,13 @@ export default function Footer() {
           <div>
             <h3 className="footer-col-title">Collection</h3>
             <ul className="footer-links-list">
-              <li><Link to="/purchase">Hoodies & Sweaters</Link></li>
-              <li><Link to="/purchase">Graphic Tees</Link></li>
-              <li><Link to="/purchase">Caps & Headwear</Link></li>
-              <li><Link to="/purchase">Desk Accessories</Link></li>
+              <li><Link to="/purchase">Animal Crossing</Link></li>
+              <li><Link to="/purchase">Stardew Valley</Link></li>
+              <li><Link to="/purchase">Hollow Knight</Link></li>
+              <li><Link to="/purchase">Teamfight Tactics</Link></li>
+              <li><Link to="/purchase">Pokémon</Link></li>
+              <li><Link to="/purchase">Slay the Spire</Link></li>
+              <li><Link to="/purchase">Final Fantasy</Link></li>
             </ul>
           </div>
         </div>
