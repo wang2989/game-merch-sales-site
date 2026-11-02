@@ -39,7 +39,9 @@ export default function Confirmation() {
               Thank You for Your Order{cart.name ? `, ${cart.name}` : ''}!
             </h1>
             <p className="form-description">
-              Your transaction has been processed successfully. A confirmation receipt has been sent.
+              {cart.email || cart.shipping_email
+                ? `Your transaction has been processed successfully. A confirmation receipt has been sent to ${cart.email || cart.shipping_email}.`
+                : 'Your transaction has been processed successfully. A confirmation receipt has been generated.'}
             </p>
 
             {/* Confirmation Voucher Badge — Mishmash Style */}

@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
+import { useCart, useInventorySync } from '../context/CartContext'
 
 import animalCrossingIcon from '../assets/game_icons/animal_crossing_icon.webp'
 import stardewValleyIcon from '../assets/game_icons/stardew_valley_icon.png'
@@ -39,6 +39,7 @@ const featuredGames = [
 ]
 
 export default function Home() {
+  useInventorySync()
   const { items, inventoryStatus, inventoryError } = useCart()
   const [activeIndex, setActiveIndex] = useState(0)
 
@@ -166,9 +167,9 @@ export default function Home() {
           </div>
 
           <div className="home-preview-grid">
-            {inventoryStatus === 'loading' ? (
+            {inventoryStatus === 'loading' && items.length === 0 ? (
               <p role="status" className="inventory-loading-text">Loading catalog preview...</p>
-            ) : inventoryStatus === 'error' ? (
+            ) : inventoryStatus === 'error' && items.length === 0 ? (
               <p role="alert" className="inventory-error-text">Unable to load catalog: {inventoryError}</p>
             ) : (
               items.slice(0, 3).map((item) => (

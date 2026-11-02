@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCart } from '../context/CartContext'
+import { useCart, useInventorySync } from '../context/CartContext'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ShoppingCart() {
+  useInventorySync()
   const navigate = useNavigate()
   const { cart, updateCart, resetCart, itemsById } = useCart()
 
@@ -20,7 +21,15 @@ export default function ShoppingCart() {
   const [visibleIds, setVisibleIds] = useState(() =>
     Object.keys(cart.buyQuantity || {}).filter((id) => (cart.buyQuantity[id] ?? 0) > 0),
   )
+  const [orderEmail, setOrderEmail] = useState(() => cart.email || '')
   const [errorMessage, setErrorMessage] = useState('')
+
+  const handleEmailChange = (e) => {
+    const val = e.target.value
+    setOrderEmail(val)
+    updateCart({ email: val })
+    setErrorMessage('')
+  }
 
   const handleDelete = (itemId) => {
     handleQuantityChange(itemId, 0)
@@ -30,6 +39,7 @@ export default function ShoppingCart() {
   const handleClear = () => {
     resetCart()
     setVisibleIds([])
+    setOrderEmail('')
     setErrorMessage('')
   }
 
@@ -38,6 +48,30 @@ export default function ShoppingCart() {
       setErrorMessage('Cannot checkout with an empty cart')
       return
     }
+
+    const trimmedEmail = orderEmail.trim()
+    if (trimmedEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmedEmail)) {
+      setErrorMessage('Please enter a valid email address (or leave it blank).')
+      return
+    }
+
+    const overStockId = visibleIds.find((id) => {
+      const item = itemsById[id]
+      const qty = cart.buyQuantity[id] ?? 0
+      return item && qty > item.stock
+    })
+
+    if (overStockId) {
+      const item = itemsById[overStockId]
+      setErrorMessage(
+        item.stock <= 0
+          ? `"${item.name}" is now out of stock. Please remove it to proceed.`
+          : `Requested quantity for "${item.name}" exceeds available stock (${item.stock} available). Please adjust your cart.`
+      )
+      return
+    }
+
+    updateCart({ email: trimmedEmail })
     setErrorMessage('')
     navigate('/paymentEntry')
   }
@@ -116,6 +150,11 @@ export default function ShoppingCart() {
                         <span className="cart-item-unit-price">
                           ${(item?.price ?? 0).toFixed(2)} each
                         </span>
+                        {item && qty > item.stock && (
+                          <span style={{ color: 'var(--color-danger, #dc2626)', fontSize: '12px', fontWeight: 600, display: 'block', marginTop: '2px' }}>
+                            {item.stock <= 0 ? 'Out of stock' : `Only ${item.stock} left in stock`}
+                          </span>
+                        )}
                       </div>
                     </div>
 
@@ -213,6 +252,36 @@ export default function ShoppingCart() {
               <div className="summary-row total-row">
                 <span>Estimated Total</span>
                 <span>${(subtotal + (isFreeShipping || subtotal === 0 ? 0 : 5)).toFixed(2)}</span>
+              </div>
+
+              {/* Optional Order Contact Email */}
+              <div style={{ marginTop: 20, marginBottom: 16 }}>
+                <label
+                  htmlFor="cart-order-email"
+                  style={{
+                    display: 'block',
+                    fontSize: 12,
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.04em',
+                    color: 'var(--color-ink-secondary)',
+                    marginBottom: 6,
+                  }}
+                >
+                  Contact Email (Optional)
+                </label>
+                <input
+                  id="cart-order-email"
+                  type="email"
+                  value={orderEmail}
+                  onChange={handleEmailChange}
+                  placeholder="player@example.com"
+                  className="form-input"
+                  style={{ width: '100%', fontSize: 14, padding: '10px 14px' }}
+                />
+                <span style={{ display: 'block', fontSize: 11, color: 'var(--color-ink-secondary)', marginTop: 4 }}>
+                  For order confirmation and receipt
+                </span>
               </div>
 
               {errorMessage && (
