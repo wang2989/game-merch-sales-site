@@ -5,7 +5,7 @@ import { placeOrder } from '../data/orders'
 import CheckoutStepper from './CheckoutStepper'
 
 export default function ViewOrder() {
-  const { cart, updateCart, itemsById, setOrderConfirmation, refreshInventory } = useCart()
+  const { cart, updateCart, resetCart, itemsById, setOrderConfirmation, refreshInventory } = useCart()
   const navigate = useNavigate()
   const [orderEmail, setOrderEmail] = useState(() => cart.email || '')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -61,7 +61,23 @@ export default function ViewOrder() {
         },
         email: trimmedOrderEmail || '',
       })
-      setOrderConfirmation(result)
+      setOrderConfirmation({
+        ...result,
+        items: orderItems,
+        totalCost,
+        name: cart.name,
+        email: trimmedOrderEmail || cart.shipping_email?.trim() || '',
+        shipping: {
+          name: cart.name,
+          address_1: cart.address_1,
+          address_2: cart.address_2,
+          city: cart.city,
+          state: cart.state,
+          zip: cart.zip,
+          email: cart.shipping_email?.trim() || '',
+        },
+      })
+      resetCart()
       refreshInventory({ force: true })
       navigate('/confirmation')
     } catch (error) {

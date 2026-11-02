@@ -136,7 +136,6 @@ export function CartProvider({ children }) {
       ...initialOrder,
       buyQuantity: { ...initialOrder.buyQuantity },
     })
-    setOrderConfirmation(null)
   }, [])
 
   const value = useMemo(() => {

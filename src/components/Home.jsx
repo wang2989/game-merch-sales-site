@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useCart, useInventorySync } from '../context/CartContext'
 
@@ -54,6 +54,11 @@ export default function Home() {
 
   const relicDisplayCount = windowWidth >= 1200 ? 5 : windowWidth >= 960 ? 4 : 3
   const visibleRelicsCount = items.length > 0 ? Math.min(items.length, relicDisplayCount) : relicDisplayCount
+  const recentItems = useMemo(() => {
+    return [...items]
+      .sort((a, b) => Number(b.id) - Number(a.id))
+      .slice(0, relicDisplayCount)
+  }, [items, relicDisplayCount])
 
   const carouselStageRef = useRef(null)
   const touchStartX = useRef(null)
@@ -190,7 +195,7 @@ export default function Home() {
             ) : inventoryStatus === 'error' && items.length === 0 ? (
               <p role="alert" className="inventory-error-text">Unable to load catalog: {inventoryError}</p>
             ) : (
-              items.slice(0, relicDisplayCount).map((item) => (
+              recentItems.map((item) => (
                 <article key={item.id} className="home-preview-card">
                   <Link to={`/product/${item.id}`} className="home-preview-image-wrapper">
                     {item.image ? (
