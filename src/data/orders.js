@@ -11,6 +11,9 @@ export async function placeOrder(order) {
   if (response.status === 409) {
     throw new Error('One or more items are out of stock. Please update your cart and try again.')
   }
+  if (response.status === 402) {
+    throw new Error('Your payment was declined. Please check your card details and try again.')
+  }
   if (response.status === 400) {
     throw new Error('The order is missing required information. Please review your shipping and payment details.')
   }
